@@ -6,10 +6,11 @@ AsyncNotify API is a backend notification service portfolio project. It will acc
 
 - Python 3.12+
 - FastAPI
+- Docker
 - pytest
 - Ruff
 
-PostgreSQL, Redis, Celery, Docker, and Alembic will be added in later steps.
+PostgreSQL, Redis, Celery, and Alembic will be added in later steps.
 
 ## Run Locally
 
@@ -31,6 +32,45 @@ The health check is available at:
 
 ```text
 GET http://127.0.0.1:8000/health
+```
+
+API docs are available at:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Run With Docker
+
+Build the Docker image:
+
+```powershell
+docker compose build
+```
+
+Start the API container:
+
+```powershell
+docker compose up
+```
+
+Build and start in one command:
+
+```powershell
+docker compose up --build
+```
+
+After Docker starts, the app is available at:
+
+```text
+http://127.0.0.1:8000/health
+http://127.0.0.1:8000/docs
+```
+
+Stop and remove containers:
+
+```powershell
+docker compose down
 ```
 
 ## Run Tests
