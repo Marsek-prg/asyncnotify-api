@@ -6,11 +6,29 @@ AsyncNotify API is a backend notification service portfolio project. It will acc
 
 - Python 3.12+
 - FastAPI
+- PostgreSQL
+- SQLAlchemy 2.x
+- Alembic
 - Docker
 - pytest
 - Ruff
 
-PostgreSQL, Redis, Celery, and Alembic will be added in later steps.
+Redis, Celery, workers, notification models, and real migrations will be added in later steps.
+
+## Environment Variables
+
+Copy `.env.example` to `.env` for local overrides if needed. Do not commit real secrets.
+
+```env
+APP_NAME=AsyncNotify API
+APP_VERSION=0.1.0
+POSTGRES_DB=asyncnotify
+POSTGRES_USER=asyncnotify
+POSTGRES_PASSWORD=asyncnotify
+DATABASE_URL=postgresql+psycopg://asyncnotify:asyncnotify@postgres:5432/asyncnotify
+```
+
+`DATABASE_URL` is used by the application and Alembic. In Docker Compose, the API connects to PostgreSQL through the `postgres` service name.
 
 ## Run Locally
 
@@ -42,28 +60,17 @@ http://127.0.0.1:8000/docs
 
 ## Run With Docker
 
-Build the Docker image:
-
-```powershell
-docker compose build
-```
-
-Start the API container:
-
-```powershell
-docker compose up
-```
-
-Build and start in one command:
+Docker Compose starts the API and PostgreSQL services. Build and start them with:
 
 ```powershell
 docker compose up --build
 ```
 
-After Docker starts, the app is available at:
+After Docker starts, check:
 
 ```text
 http://127.0.0.1:8000/health
+http://127.0.0.1:8000/health/db
 http://127.0.0.1:8000/docs
 ```
 
@@ -72,6 +79,19 @@ Stop and remove containers:
 ```powershell
 docker compose down
 ```
+
+PostgreSQL data is stored in the named Docker volume `postgres_data`.
+
+## Database
+
+The project has the database foundation configured:
+
+- SQLAlchemy 2.x declarative base in `app/db/base.py`
+- synchronous SQLAlchemy engine and session dependency in `app/db/session.py`
+- Alembic configuration in `alembic.ini` and `alembic/`
+- `Base.metadata` wired as Alembic `target_metadata`
+
+No business tables, Event/Notification models, or real migrations are included yet. They will be added in future steps.
 
 ## Run Tests
 
