@@ -3,6 +3,24 @@ services:
     build: .
     ports:
       - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://asyncnotify:asyncnotify@postgres:5432/asyncnotify}
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - .:/app
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-asyncnotify}
+      POSTGRES_USER: ${POSTGRES_USER:-asyncnotify}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-asyncnotify}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
