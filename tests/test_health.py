@@ -19,6 +19,16 @@ def test_fastapi_metadata_uses_settings() -> None:
     assert app.version == settings.app_version
 
 
+def test_settings_has_expected_values() -> None:
+    assert settings.app_name == "AsyncNotify API"
+    assert settings.app_version == "0.1.0"
+    assert settings.database_url.startswith("postgresql+psycopg://")
+
+
+def test_get_db_dependency_can_be_imported() -> None:
+    assert callable(get_db)
+
+
 class FakeDatabaseSession:
     def __init__(self) -> None:
         self.executed_statements: list[str] = []
