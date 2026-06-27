@@ -5,7 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.api.v1.routes.events import router as events_router
+from app.api.v1.routes import events_router
 from app.core.config import settings
 from app.db.session import get_db
 
