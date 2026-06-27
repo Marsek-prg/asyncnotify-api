@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from app.core.config import settings
 from app.db.session import get_db
 from app.main import app
 
@@ -11,6 +12,11 @@ def test_health_check() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+def test_fastapi_metadata_uses_settings() -> None:
+    assert app.title == settings.app_name
+    assert app.version == settings.app_version
 
 
 class FakeDatabaseSession:

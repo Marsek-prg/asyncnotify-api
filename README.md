@@ -46,6 +46,7 @@ The health check is available at:
 
 ```text
 GET http://127.0.0.1:8000/health
+GET http://127.0.0.1:8000/health/db
 ```
 
 API docs are available at:
@@ -78,6 +79,7 @@ After Docker starts, the app is available at:
 
 ```text
 http://127.0.0.1:8000/health
+http://127.0.0.1:8000/health/db
 http://127.0.0.1:8000/docs
 ```
 
@@ -87,16 +89,19 @@ Stop and remove containers:
 docker compose down
 ```
 
-When PostgreSQL is running, apply database migrations with:
+When Docker PostgreSQL is running, manage migrations from the API container:
+
+```powershell
+docker compose exec api alembic upgrade head
+docker compose exec api alembic current
+docker compose exec api alembic downgrade -1
+```
+
+For local Alembic commands, `DATABASE_URL` must point to an accessible PostgreSQL
+instance before running:
 
 ```powershell
 alembic upgrade head
-```
-
-Rollback the latest migration with:
-
-```powershell
-alembic downgrade -1
 ```
 
 ## Run Tests

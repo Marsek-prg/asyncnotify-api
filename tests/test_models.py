@@ -87,4 +87,6 @@ def test_initial_alembic_migration_enums_do_not_auto_create_types() -> None:
 def test_settings_exposes_database_url() -> None:
     from app.core.config import settings
 
+    assert settings.app_name
+    assert settings.app_version
     assert settings.database_url.startswith("postgresql+psycopg://")

@@ -5,9 +5,10 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.db.session import get_db
 
-app = FastAPI(title="AsyncNotify API", version="0.1.0")
+app = FastAPI(title=settings.app_name, version=settings.app_version)
 
 
 @app.get("/health")
