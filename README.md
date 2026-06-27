@@ -6,11 +6,25 @@ AsyncNotify API is a backend notification service portfolio project. It will acc
 
 - Python 3.12+
 - FastAPI
+- PostgreSQL
+- SQLAlchemy 2.x
+- Alembic
 - Docker
 - pytest
 - Ruff
 
-PostgreSQL, Redis, Celery, and Alembic will be added in later steps.
+Redis, Celery, and notification workers will be added in later steps.
+
+## Persistence
+
+The project now includes the first domain persistence models:
+
+- incoming events
+- notifications
+- delivery attempts
+
+Alembic includes the initial domain migration that creates the `events`,
+`notifications`, and `delivery_attempts` tables.
 
 ## Run Locally
 
@@ -71,6 +85,18 @@ Stop and remove containers:
 
 ```powershell
 docker compose down
+```
+
+When PostgreSQL is running, apply database migrations with:
+
+```powershell
+alembic upgrade head
+```
+
+Rollback the latest migration with:
+
+```powershell
+alembic downgrade -1
 ```
 
 ## Run Tests
