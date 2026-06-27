@@ -14,6 +14,11 @@ def test_health_check() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_fastapi_metadata_uses_settings() -> None:
+    assert app.title == settings.app_name
+    assert app.version == settings.app_version
+
+
 def test_settings_has_expected_values() -> None:
     assert settings.app_name == "AsyncNotify API"
     assert settings.app_version == "0.1.0"
@@ -24,13 +29,19 @@ def test_get_db_dependency_can_be_imported() -> None:
     assert callable(get_db)
 
 
-def test_database_health_check_with_overridden_dependency() -> None:
-    class FakeSession:
-        def execute(self, statement: object) -> None:
-            assert str(statement) == "SELECT 1"
+class FakeDatabaseSession:
+    def __init__(self) -> None:
+        self.executed_statements: list[str] = []
 
-    def override_get_db() -> FakeSession:
-        return FakeSession()
+    def execute(self, statement: object) -> None:
+        self.executed_statements.append(str(statement))
+
+
+def test_database_health_check_uses_database_dependency() -> None:
+    fake_db = FakeDatabaseSession()
+
+    def override_get_db() -> FakeDatabaseSession:
+        return fake_db
 
     app.dependency_overrides[get_db] = override_get_db
     try:
@@ -40,3 +51,4 @@ def test_database_health_check_with_overridden_dependency() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "database": "ok"}
+    assert fake_db.executed_statements == ["SELECT 1"]

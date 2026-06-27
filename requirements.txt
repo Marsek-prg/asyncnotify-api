@@ -1,9 +1,9 @@
 fastapi
 uvicorn[standard]
+pydantic-settings
 pytest
 httpx
 ruff
 sqlalchemy
 alembic
 psycopg[binary]
-pydantic-settings

@@ -17,7 +17,9 @@ def health_check() -> dict[str, str]:
 
 
 @app.get("/health/db")
-def database_health_check(db: Annotated[Session, Depends(get_db)]) -> dict[str, str]:
+def database_health_check(
+    db: Annotated[Session, Depends(get_db)],
+) -> dict[str, str]:
     try:
         db.execute(text("SELECT 1"))
     except SQLAlchemyError as exc:

@@ -13,7 +13,18 @@ AsyncNotify API is a backend notification service portfolio project. It will acc
 - pytest
 - Ruff
 
-Redis, Celery, workers, notification models, and real migrations will be added in later steps.
+Redis, Celery, and notification workers will be added in later steps.
+
+## Persistence
+
+The project now includes the first domain persistence models:
+
+- incoming events
+- notifications
+- delivery attempts
+
+Alembic includes the initial domain migration that creates the `events`,
+`notifications`, and `delivery_attempts` tables.
 
 ## Environment Variables
 
@@ -21,6 +32,8 @@ Copy `.env.example` to `.env` for local overrides if needed. Do not commit real 
 
 ```env
 APP_NAME=AsyncNotify API
+APP_ENV=local
+APP_DEBUG=true
 APP_VERSION=0.1.0
 POSTGRES_DB=asyncnotify
 POSTGRES_USER=asyncnotify
@@ -50,6 +63,7 @@ The health check is available at:
 
 ```text
 GET http://127.0.0.1:8000/health
+GET http://127.0.0.1:8000/health/db
 ```
 
 API docs are available at:
@@ -90,8 +104,23 @@ The project has the database foundation configured:
 - synchronous SQLAlchemy engine and session dependency in `app/db/session.py`
 - Alembic configuration in `alembic.ini` and `alembic/`
 - `Base.metadata` wired as Alembic `target_metadata`
+- Event, Notification, and DeliveryAttempt domain models
+- initial migration `20260627_0001_create_notification_tables.py`
 
-No business tables, Event/Notification models, or real migrations are included yet. They will be added in future steps.
+When Docker PostgreSQL is running, manage migrations from the API container:
+
+```powershell
+docker compose exec api alembic upgrade head
+docker compose exec api alembic current
+docker compose exec api alembic downgrade -1
+```
+
+For local Alembic commands, `DATABASE_URL` must point to an accessible PostgreSQL
+instance before running:
+
+```powershell
+alembic upgrade head
+```
 
 ## Run Tests
 
