@@ -1,6 +1,8 @@
 # AsyncNotify API
 
-AsyncNotify API is a backend notification service portfolio project. It will accept events through a REST API, persist notification data, and process notification delivery in background workers in later steps.
+AsyncNotify API is a backend notification service portfolio project. It accepts
+events through a REST API, persists notification data, and will process
+notification delivery in background workers in later steps.
 
 ## Current Tech Stack
 
@@ -14,6 +16,47 @@ AsyncNotify API is a backend notification service portfolio project. It will acc
 - Ruff
 
 Redis, Celery, and notification workers will be added in later steps.
+
+## Events API
+
+This step stores incoming events only. Notification creation, background
+processing, retries, workers, and delivery integrations will be added later.
+
+Available endpoints:
+
+```text
+POST /api/v1/events
+GET  /api/v1/events
+GET  /api/v1/events/{event_id}
+```
+
+Create an event:
+
+```powershell
+curl -X POST "http://127.0.0.1:8000/api/v1/events" `
+  -H "Content-Type: application/json" `
+  -d '{
+    "event_type": "order_created",
+    "source": "stockflow-api",
+    "payload": {
+      "order_id": "123",
+      "customer_email": "user@example.com"
+    }
+  }'
+```
+
+List events with optional filters:
+
+```text
+GET /api/v1/events?limit=20&offset=0
+GET /api/v1/events?event_type=order_created&source=stockflow-api
+```
+
+Get one event by id:
+
+```text
+GET /api/v1/events/{event_id}
+```
 
 ## Persistence
 
@@ -77,7 +120,9 @@ http://127.0.0.1:8000/docs
 Docker Compose starts the API and PostgreSQL services. Build and start them with:
 
 ```powershell
-docker compose up --build
+docker compose down -v
+docker compose up -d --build
+docker compose exec api alembic upgrade head
 ```
 
 After Docker starts, check:
@@ -132,4 +177,10 @@ pytest
 
 ```powershell
 ruff check .
+```
+
+## Validate Docker Compose
+
+```powershell
+docker compose config
 ```

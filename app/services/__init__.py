@@ -1,1 +1,3 @@
+from app.services import event_service
 
+__all__ = ["event_service"]
